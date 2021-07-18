@@ -4,12 +4,13 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "users")
-data class UserEntity(
+class UserEntity(
+) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Int,
+    var id: Int = 0
     @Column(nullable = false)
-    val username: String,
-    @Column(nullable = false)
-    var passwordHash: String
-)
+    var username: String = ""
+    @Column(nullable = false, name = "password_hash")
+    var passwordHash: String = ""
+}

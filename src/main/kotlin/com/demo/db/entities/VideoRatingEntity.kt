@@ -4,15 +4,15 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "video_rating")
-class VideoRatingEntity(
+class VideoRatingEntity {
     @Id
-    var id: Int,
+    var id: Int = 0
     @ManyToOne
     @JoinColumn(name = "user_id")
-    val user: UserEntity,
+    var user: UserEntity? = null
     @ManyToOne
     @JoinColumn(name = "video_id")
-    val video: VideoEntity,
+    var video: VideoEntity? = null
     @Column(nullable = false)
-    var rating: Int
-)
+    var rating: Int = 0
+}
