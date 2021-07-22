@@ -39,7 +39,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.demo.Application</mainClass>
+                    <mainClass>com.demo.ApplicationKt</mainClass>
                 </configuration>
             </plugin>
             <plugin>
@@ -51,7 +51,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.demo.Application</mainClass>
+                            <mainClass>com.demo.ApplicationKt</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
