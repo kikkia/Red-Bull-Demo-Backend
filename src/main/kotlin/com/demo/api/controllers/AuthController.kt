@@ -1,6 +1,7 @@
 package com.demo.api.controllers
 
 import com.demo.db.entities.UserEntity
+import com.demo.exceptions.BadRequestException
 import com.demo.exceptions.LoginException
 import com.demo.service.TokenService
 import com.demo.service.UserService
@@ -34,6 +35,12 @@ class AuthController(private val userService: UserService, private val tokenServ
 
     @PostMapping("/register")
     fun register(@RequestParam username: String, @RequestParam pass: String) : ResponseEntity<String> {
+        if (username.length < 3 || username.length > 100) {
+            throw BadRequestException()
+        } else if (pass.length < 3 || pass.length > 200) {
+            throw BadRequestException()
+        }
+
         userService.create(username, pass)
         return ResponseEntity.ok(username)
     }
