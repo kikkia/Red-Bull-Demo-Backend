@@ -26,6 +26,12 @@ class AuthController(private val userService: UserService, private val tokenServ
         return ResponseEntity.ok("success");
     }
 
+    @PostMapping("/logout")
+    fun logout(response: HttpServletResponse) : ResponseEntity<String> {
+        setLogoutCookies(response)
+        return ResponseEntity.ok("success");
+    }
+
     @PostMapping("/register")
     fun register(@RequestParam username: String, @RequestParam pass: String) : ResponseEntity<String> {
         userService.create(username, pass)
@@ -39,6 +45,23 @@ class AuthController(private val userService: UserService, private val tokenServ
         tokenCookie.isHttpOnly = true
 
         val usernameCookie = Cookie("username", user.username)
+        cookies.add(tokenCookie)
+        cookies.add(usernameCookie)
+
+        for (cookie in cookies) {
+            cookie.maxAge = tokenService.JWT_TOKEN_VALIDITY.toInt()
+            cookie.path = "/"
+            response.addCookie(cookie)
+        }
+    }
+
+    private fun setLogoutCookies(response: HttpServletResponse) {
+        val cookies = mutableListOf<Cookie>()
+
+        val tokenCookie = Cookie("token", "")
+        tokenCookie.isHttpOnly = true
+
+        val usernameCookie = Cookie("username", "")
         cookies.add(tokenCookie)
         cookies.add(usernameCookie)
 

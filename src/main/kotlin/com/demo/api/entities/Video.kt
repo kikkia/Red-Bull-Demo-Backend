@@ -9,4 +9,5 @@ data class Video(val id: String,
                  val previewUrl: String) {
     var rating : Double = 0.0
     var description : String = ""
+    var yourRating : Double = 0.0
 }

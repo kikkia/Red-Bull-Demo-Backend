@@ -1,5 +1,6 @@
 package com.demo.api.controllers
 
+import com.demo.api.entities.Rating
 import com.demo.api.entities.Video
 import com.demo.exceptions.InvalidRatingException
 import org.springframework.http.ResponseEntity
@@ -39,5 +40,11 @@ class videosController(private val videoService: VideoService) {
         }
 
         return ResponseEntity.ok(videoService.rateVideo(videoId, auth.name, rating))
+    }
+
+    @GetMapping("/{videoId}/rate")
+    fun getMyRating(@PathVariable("videoId") videoId: String) : ResponseEntity<Rating> {
+        val auth = SecurityContextHolder.getContext().authentication
+        return ResponseEntity.ok(videoService.getRating(videoId, auth.name))
     }
 }

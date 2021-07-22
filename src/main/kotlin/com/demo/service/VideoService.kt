@@ -1,5 +1,6 @@
 package com.demo.service
 
+import com.demo.api.entities.Rating
 import com.demo.api.entities.Video
 import com.demo.api.mappers.VideoMapper
 import com.demo.db.entities.VideoEntity
@@ -40,28 +41,36 @@ open class VideoService(private val videoRepository: VideoRepository,
     }
 
     open fun getById(videoId: String) : Video {
+        return VideoMapper.map(getEntityById(videoId))
+    }
+
+    open fun getEntityById(videoId: String) : VideoEntity {
         val opt = videoRepository.findById(videoId)
         if (opt.isEmpty) {
             throw NotFoundException();
         }
-        return VideoMapper.map(opt.get())
+        return opt.get()
+    }
+
+    open fun getRating(videoId: String, username: String) : Rating {
+        val vid = getEntityById(videoId)
+        val user = userService.getByUsername(username)
+        val ratingOpt = ratingService.getForVideoByUser(vid, user)
+        return if(ratingOpt.isPresent) Rating(videoId, ratingOpt.get().rating) else Rating(videoId, 0)
     }
 
     open fun rateVideo(videoId: String, username: String, score: Int) : Video {
-        val vidOpt = videoRepository.findById(videoId)
-        if (vidOpt.isEmpty) {
-            throw NotFoundException()
-        }
+        val vid = getEntityById(videoId)
         val user = userService.getByUsername(username)
-        val ratingOpt = ratingService.getForVideoByUser(vidOpt.get(), user)
+        val ratingOpt = ratingService.getForVideoByUser(vid, user)
         val rating = VideoRatingEntity()
         rating.id = if (ratingOpt.isPresent) ratingOpt.get().id else 0
         rating.user = user
-        rating.video = vidOpt.get()
+        rating.video = vid
         rating.rating = score
         ratingService.save(rating)
 
-        return VideoMapper.map(updateRating(vidOpt.get()))
+        return VideoMapper.map(updateRating(vid))
     }
 
     private fun updateRating(videoEntity: VideoEntity) : VideoEntity {
